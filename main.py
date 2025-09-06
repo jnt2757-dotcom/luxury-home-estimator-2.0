@@ -1,88 +1,99 @@
-from fastapi import FastAPI
-from fastapi.responses import FileResponse, JSONResponse
-from fastapi.middleware.cors import CORSMiddleware
-import os
+from fastapi import FastAPI, Request, Form
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from pathlib import Path
 
-app = FastAPI()
+app = FastAPI(title="Thompson CBG Luxury Home Estimator")
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"]
-)
+# Paths for templates and static files
+BASE_DIR = Path(__file__).resolve().parent
+templates = Jinja2Templates(directory=str(BASE_DIR / "frontend"))
+app.mount("/static", StaticFiles(directory=str(BASE_DIR / "frontend/static")), name="static")
 
-@app.get("/")
-async def home():
-    return FileResponse(os.path.join("frontend", "index.html"))
+# Example neighborhoods and average per square foot prices
+NEIGHBORHOODS = {
+    "Eastover": 650,
+    "Myers Park": 700,
+    "Foxcroft": 675
+}
 
-@app.post("/estimate")
-async def estimate(data: dict):
-    # General
-    sqft = int(data.get("sqft", 0))
-    bedrooms = int(data.get("bedrooms", 0))
-    bathrooms = int(data.get("bathrooms", 0))
-    garage = int(data.get("garage", 0))
+# Example architects with modifiers (prices vary based on architect)
+ARCHITECTS = {
+    "Garrett Nelson Studio": 1.05,
+    "Presley Dixon": 1.1,
+    "Default": 1.0
+}
 
-    # Luxury features
-    pool = data.get("pool") == "Yes"
-    spa = data.get("spa") == "Yes"
-    elevator = data.get("elevator") == "Yes"
-    home_theater = data.get("home_theater") == "Yes"
-    gym = data.get("gym") == "Yes"
-    wine_cellar = data.get("wine_cellar") == "Yes"
-    smart_home = data.get("smart_home") == "Yes"
+# Example features with price multipliers
+FEATURES = {
+    "Pool": 1.15,
+    "Slate Roof": 1.10,
+    "Wood Roof": 1.05,
+    "Marble Finishes": 1.20,
+    "Smart Home Integration": 1.08
+}
 
-    # Kitchen & Dining
-    gourmet_kitchen = data.get("gourmet_kitchen") == "Yes"
-    island = data.get("island") == "Yes"
-    premium_appliances = data.get("premium_appliances") == "Yes"
-    countertops = data.get("countertops") == "Marble"
+@app.get("/", response_class=HTMLResponse)
+def read_index(request: Request):
+    return templates.TemplateResponse("index.html", {
+        "request": request,
+        "neighborhoods": NEIGHBORHOODS.keys(),
+        "architects": ARCHITECTS.keys(),
+        "features": FEATURES.keys()
+    })
 
-    # Outdoor Living
-    patio = data.get("patio") == "Yes"
-    outdoor_kitchen = data.get("outdoor_kitchen") == "Yes"
-    landscaping = data.get("landscaping") == "Yes"
-    fencing = data.get("fencing") == "Yes"
+@app.post("/estimate", response_class=HTMLResponse)
+def calculate_estimate(
+    request: Request,
+    neighborhood: str = Form(...),
+    architect: str = Form(...),
+    square_feet: float = Form(...),
+    selected_features: list[str] = Form([])
+):
+    # Base price per square foot by neighborhood
+    base_price = NEIGHBORHOODS.get(neighborhood, 650)
 
-    # Interior Finishes
-    flooring = data.get("flooring", "Carpet")
-    lighting = data.get("lighting", "Standard")
-    cabinetry = data.get("cabinetry", "Standard")
-    bathroom_finish = data.get("bathroom_finish", "Standard")
+    # Architect multiplier
+    architect_multiplier = ARCHITECTS.get(architect, 1.0)
 
-    # Extras
-    guest_house = data.get("guest_house") == "Yes"
-    office = data.get("office") == "Yes"
-    security_system = data.get("security_system") == "Yes"
-    solar_panels = data.get("solar_panels") == "Yes"
+    # Features multiplier
+    feature_multiplier = 1.0
+    for feature in selected_features:
+        feature_multiplier *= FEATURES.get(feature, 1.0)
 
-    # Base costs
-    total = 0
-    total += sqft * 600
-    total += bedrooms * 15000
-    total += bathrooms * 10000
-    total += garage * 10000
+    # Final estimate
+    estimated_price = square_feet * base_price * architect_multiplier * feature_multiplier
+    estimated_price = round(estimated_price, 2)
 
-    # Add-ons
-    for feature, cost in [
-        (pool, 100000), (spa, 20000), (elevator, 40000),
-        (home_theater, 35000), (gym, 25000), (wine_cellar, 20000),
-        (smart_home, 30000), (gourmet_kitchen, 20000),
-        (island, 5000), (premium_appliances, 15000),
-        (patio, 10000), (outdoor_kitchen, 15000),
-        (landscaping, 25000), (fencing, 5000),
-        (guest_house, 60000), (office, 10000),
-        (security_system, 8000), (solar_panels, 25000)
-    ]:
-        if feature:
-            total += cost
+    # Context to render results page
+    context = {
+        "request": request,
+        "neighborhood": neighborhood,
+        "architect": architect,
+        "square_feet": square_feet,
+        "features": selected_features,
+        "estimated_price": f"${estimated_price:,.2f}"
+    }
 
-    # Finishes
-    if flooring == "Hardwood": total += 15000
-    if flooring == "Marble": total += 25000
-    if lighting == "Premium": total += 10000
-    if cabinetry == "Premium": total += 15000
-    if bathroom_finish == "Luxury": total += 20000
+    return templates.TemplateResponse("index.html", context)
 
-    return JSONResponse({"estimate": f"${total:,}"})
+# Optional API endpoint for JSON estimates (for mobile or future integration)
+@app.post("/api/estimate")
+def api_estimate(
+    neighborhood: str,
+    architect: str,
+    square_feet: float,
+    features: list[str] = []
+):
+    base_price = NEIGHBORHOODS.get(neighborhood, 650)
+    architect_multiplier = ARCHITECTS.get(architect, 1.0)
+    feature_multiplier = 1.0
+    for feature in features:
+        feature_multiplier *= FEATURES.get(feature, 1.0)
+    estimated_price = square_feet * base_price * architect_multiplier * feature_multiplier
+    return {"estimated_price": round(estimated_price, 2)}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
