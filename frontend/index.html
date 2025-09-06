@@ -1,80 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Luxury Home Estimator</title>
-<style>
-body { font-family: Arial; max-width: 600px; margin: auto; padding: 10px; }
-input, select { width: 100%; margin: 5px 0; padding: 8px; }
-button { width: 100%; padding: 10px; margin-top: 10px; background: #007BFF; color: white; border: none; cursor: pointer; }
-button:hover { background: #0056b3; }
-.result { margin-top: 20px; }
-</style>
+    <meta charset="UTF-8">
+    <title>Charlotte Luxury Home Estimator</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+    <h1>Charlotte Luxury Home Estimator</h1>
 
-<h2>Luxury Home Cost Estimator</h2>
+    <form id="estimateForm">
+        <h2>Home Size & Layout</h2>
+        <input type="number" id="squareFeet" placeholder="Square Feet" required>
+        <input type="number" id="bedrooms" placeholder="Bedrooms" required>
+        <input type="number" id="bathrooms" placeholder="Bathrooms" required>
+        <input type="number" id="floors" placeholder="Number of Floors" required>
+        <label>Basement: <input type="checkbox" id="basement"></label>
+        <input type="number" id="garageCars" placeholder="Garage Cars" required>
 
-<label>Gross Area (m²)</label><input id="gross_area" type="number" value="500">
-<label>Floors</label><input id="floors" type="number" value="2">
-<label>Finish Level (1-5)</label><input id="finish_level" type="number" min="1" max="5" value="3">
-<label>Foundation</label>
-<select id="foundation">
-  <option value="basement">Basement</option>
-  <option value="slab">Slab</option>
-</select>
-<label>Pool</label>
-<select id="has_pool">
-  <option value="0">No</option>
-  <option value="1">Yes</option>
-</select>
-<label>Elevator</label>
-<select id="has_elevator">
-  <option value="0">No</option>
-  <option value="1">Yes</option>
-</select>
-<label>Site Difficulty (1-3)</label><input id="site_difficulty" type="number" min="1" max="3" value="1">
-<label>Location Index</label><input id="location_index" type="number" step="0.01" value="1.0">
-<label>Year</label><input id="year" type="number" value="2025">
+        <h2>Style & Features</h2>
+        <select id="homeStyle">
+            <option>Modern</option>
+            <option>Colonial</option>
+            <option>Craftsman</option>
+            <option>Traditional</option>
+        </select>
+        <select id="roofType">
+            <option>Asphalt</option>
+            <option>Metal</option>
+            <option>Tile</option>
+        </select>
+        <select id="exteriorFinish">
+            <option>Brick</option>
+            <option>Stone</option>
+            <option>Stucco</option>
+            <option>Vinyl</option>
+        </select>
+        <select id="windowsType">
+            <option>Standard</option>
+            <option>Double-pane</option>
+            <option>Triple-pane</option>
+        </select>
 
-<button onclick="getEstimate()">Get Estimate</button>
+        <h2>Interior Finishes</h2>
+        <select id="flooring">
+            <option>Carpet</option>
+            <option>Hardwood</option>
+            <option>Tile</option>
+            <option>Luxury Vinyl</option>
+        </select>
+        <select id="kitchenType">
+            <option>Standard</option>
+            <option>Gourmet</option>
+        </select>
+        <select id="countertops">
+            <option>Granite</option>
+            <option>Quartz</option>
+            <option>Marble</option>
+        </select>
+        <select id="appliances">
+            <option>Standard</option>
+            <option>High-end</option>
+        </select>
+        <select id="bathroomFinish">
+            <option>Standard</option>
+            <option>Luxury</option>
+            <option>Spa</option>
+        </select>
 
-<div class="result" id="result"></div>
+        <h2>Energy & Location</h2>
+        <label>Solar Panels: <input type="checkbox" id="solar"></label>
+        <select id="smartHome">
+            <option>Basic</option>
+            <option>Full</option>
+        </select>
+        <select id="insulation">
+            <option>Standard</option>
+            <option>High-efficiency</option>
+        </select>
+        <select id="neighborhood">
+            <option>Uptown</option>
+            <option>SouthPark</option>
+            <option>Ballantyne</option>
+            <option>Suburban</option>
+            <option>Rural</option>
+        </select>
+        <input type="number" id="lotSize" placeholder="Lot size (acres)">
+        <select id="landscaping">
+            <option>Standard</option>
+            <option>Custom</option>
+        </select>
+        <label>Pool: <input type="checkbox" id="pool"></label>
+        <label>Deck: <input type="checkbox" id="deck"></label>
+        <label>Outdoor Kitchen: <input type="checkbox" id="outdoorKitchen"></label>
 
-<script>
-async function getEstimate() {
-    const project = {
-        gross_area: parseFloat(document.getElementById("gross_area").value),
-        floors: parseInt(document.getElementById("floors").value),
-        finish_level: parseInt(document.getElementById("finish_level").value),
-        foundation: document.getElementById("foundation").value,
-        has_pool: parseInt(document.getElementById("has_pool").value),
-        has_elevator: parseInt(document.getElementById("has_elevator").value),
-        site_difficulty: parseInt(document.getElementById("site_difficulty").value),
-        location_index: parseFloat(document.getElementById("location_index").value),
-        year: parseInt(document.getElementById("year").value)
-    };
+        <button type="button" id="getEstimateBtn">Get Estimate</button>
+    </form>
 
-   const response = await fetch("https://luxury-home-estimator-2-0-1.onrender.com/estimate", { ... })
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(project)
-    });
-    const data = await response.json();
+    <p id="estimateResult"></p>
 
-    let html = `<h3>Estimate</h3>
-                <p>P10: CHF ${data.p10}</p>
-                <p>P50: CHF ${data.p50}</p>
-                <p>P90: CHF ${data.p90}</p>
-                <h4>Breakdown (P50)</h4><ul>`;
-    for (const [key, value] of Object.entries(data.breakdown)) {
-        html += `<li>${key}: CHF ${Math.round(value)}</li>`;
-    }
-    html += "</ul>";
-    document.getElementById("result").innerHTML = html;
-}
-</script>
+    <script>
+        document.getElementById("getEstimateBtn").addEventListener("click", async () => {
+            const payload = {
+                square_feet: parseInt(document.getElementById("squareFeet").value),
+                bedrooms: parseInt(document.getElementById("bedrooms").value),
+                bathrooms: parseInt(document.getElementById("bathrooms").value),
+                floors: parseInt(document.getElementById("floors").value),
+                basement: document.getElementById("basement").checked,
+                garage_cars: parseInt(document.getElementById("garageCars").value),
+                home_style: document.getElementById("homeStyle").value,
+                roof_type: document.getElementById("roofType").value,
+                exterior_finish: document.getElementById("exteriorFinish").value,
+                windows_type: document.getElementById("windowsType").value,
+                flooring: document.getElementById("flooring").value,
+                kitchen_type: document.getElementById("kitchenType").value,
+                countertops: document.getElementById("countertops").value,
+                appliances: document.getElementById("appliances").value,
+                bathroom_finish: document.getElementById("bathroomFinish").value,
+                solar: document.getElementById("solar").checked,
+                smart_home: document.getElementById("smartHome").value,
+                insulation: document.getElementById("insulation").value,
+                neighborhood: document.getElementById("neighborhood").value,
+                lot_size: parseFloat(document.getElementById("lotSize").value || 0),
+                landscaping: document.getElementById("landscaping").value,
+                pool: document.getElementById("pool").checked,
+                deck: document.getElementById("deck").checked,
+                outdoor_kitchen: document.getElementById("outdoorKitchen").checked,
+                extras: []
+            };
 
+            const response = await fetch("/estimate", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(payload)
+            });
+
+            const data = await response.json();
+            document.getElementById("estimateResult").innerText = `Estimated Cost: $${data.estimate.toLocaleString()}`;
+        });
+    </script>
 </body>
 </html>
