@@ -2,125 +2,47 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Thompson CBG Luxury Home Estimator</title>
+    <title>Luxury Home Estimator 2.0</title>
     <link rel="stylesheet" href="/static/style.css">
-    <style>
-        body {
-            font-family: 'Helvetica Neue', sans-serif;
-            background-color: #f8f8f8;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #0b1d3a;
-            color: #fff;
-            text-align: center;
-            padding: 2rem 0;
-        }
-        header img {
-            max-height: 80px;
-        }
-        main {
-            max-width: 900px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background-color: #fff;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            border-radius: 12px;
-        }
-        h1 {
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-        form {
-            display: grid;
-            gap: 1rem;
-        }
-        label {
-            font-weight: bold;
-        }
-        select, input[type="number"], input[type="text"] {
-            padding: 0.5rem;
-            font-size: 1rem;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-        }
-        .features input {
-            margin-right: 0.5rem;
-        }
-        button {
-            background-color: #0b1d3a;
-            color: #fff;
-            border: none;
-            padding: 1rem;
-            font-size: 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        button:hover {
-            background-color: #162a5c;
-        }
-        .result {
-            margin-top: 1.5rem;
-            font-size: 1.2rem;
-            text-align: center;
-            color: #0b1d3a;
-            font-weight: bold;
-        }
-        footer {
-            text-align: center;
-            margin: 2rem 0;
-            color: #666;
-        }
-    </style>
 </head>
 <body>
-<header>
-    <img src="/static/logo.png" alt="Thompson CBG Logo">
-    <h1>Luxury Home Estimator</h1>
-</header>
-<main>
-    <form method="post" action="/estimate">
-        <label for="neighborhood">Neighborhood</label>
-        <select name="neighborhood" id="neighborhood">
-            {% for n in neighborhoods %}
-                <option value="{{ n }}" {% if neighborhood == n %}selected{% endif %}>{{ n }}</option>
-            {% endfor %}
-        </select>
-
-        <label for="architect">Architect</label>
-        <select name="architect" id="architect">
-            {% for a in architects %}
-                <option value="{{ a }}" {% if architect == a %}selected{% endif %}>{{ a }}</option>
-            {% endfor %}
-        </select>
-
-        <label for="square_feet">Square Feet</label>
-        <input type="number" name="square_feet" id="square_feet" value="{{ square_feet or '' }}" required>
-
-        <div class="features">
-            <label>Features</label>
-            {% for f in all_features %}
-                <div>
-                    <input type="checkbox" name="selected_features" value="{{ f }}" {% if f in features %}checked{% endif %}>
-                    {{ f }}
+    <header>
+        <img src="/static/logo.png" alt="CBG Logo" id="logo">
+        <h1>Luxury Home Estimator 2.0</h1>
+    </header>
+    
+    <main>
+        <form action="/estimate" method="post">
+            <label for="sqft">Square Footage:</label>
+            <input type="number" id="sqft" name="sqft" value="2500" required>
+            
+            {% for category, items in options.items() %}
+            <section>
+                <h2>{{ category }}</h2>
+                <div class="options">
+                    {% for option in items %}
+                    <label>
+                        <input type="checkbox" name="options" value="{{ option }}">
+                        {{ option }}
+                    </label>
+                    {% endfor %}
                 </div>
+            </section>
             {% endfor %}
-        </div>
+            
+            <button type="submit">Calculate Estimate</button>
+        </form>
 
-        <button type="submit">Get Estimate</button>
-    </form>
-
-    {% if estimated_price %}
+        {% if estimate %}
         <div class="result">
-            Estimated Home Price: {{ estimated_price }}
+            <h2>Estimated Price:</h2>
+            <p>{{ estimate }}</p>
         </div>
-    {% endif %}
-</main>
-<footer>
-    Thompson Custom Building Group &copy; 2025
-</footer>
+        {% endif %}
+    </main>
+
+    <footer>
+        <p>© 2025 Thompson Building Group</p>
+    </footer>
 </body>
 </html>
