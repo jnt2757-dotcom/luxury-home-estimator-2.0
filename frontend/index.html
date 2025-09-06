@@ -1,48 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Luxury Home Estimator 2.0</title>
-    <link rel="stylesheet" href="/static/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luxury Home Estimator | Thompson CBG</title>
+<link rel="stylesheet" href="/static/style.css">
+<script src="/static/script.js" defer></script>
 </head>
 <body>
     <header>
-        <img src="/static/logo.png" alt="CBG Logo" id="logo">
-        <h1>Luxury Home Estimator 2.0</h1>
-    </header>
-    
-    <main>
-        <form action="/estimate" method="post">
-            <label for="sqft">Square Footage:</label>
-            <input type="number" id="sqft" name="sqft" value="2500" required>
-            
-            {% for category, items in options.items() %}
-            <section>
-                <h2>{{ category }}</h2>
-                <div class="options">
-                    {% for option in items %}
-                    <label>
-                        <input type="checkbox" name="options" value="{{ option }}">
-                        {{ option }}
-                    </label>
-                    {% endfor %}
-                </div>
-            </section>
-            {% endfor %}
-            
-            <button type="submit">Calculate Estimate</button>
-        </form>
-
-        {% if estimate %}
-        <div class="result">
-            <h2>Estimated Price:</h2>
-            <p>{{ estimate }}</p>
+        <nav>
+            <img src="/static/images/logo.png" alt="Thompson CBG Logo" class="logo">
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Estimator</a></li>
+                <li><a href="#">Portfolio</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="hero">
+            <h1>Luxury Home Estimator 2.0</h1>
+            <p>Estimate your dream custom home with Thompson CBG</p>
         </div>
-        {% endif %}
+    </header>
+
+    <main>
+        <section class="estimator">
+            <form action="/estimate" method="post">
+                <div class="input-group">
+                    <label for="sqft">Square Footage:</label>
+                    <input type="number" id="sqft" name="sqft" value="2500" required>
+                </div>
+
+                {% for category, items in options.items() %}
+                <div class="option-category">
+                    <h2>{{ category }}</h2>
+                    <div class="option-cards">
+                        {% for option in items %}
+                        <label class="option-card">
+                            <input type="checkbox" name="options" value="{{ option }}">
+                            <img src="/static/images/option_{{ option|replace(' ','_') }}.jpg" alt="{{ option }}">
+                            <span>{{ option }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+
+                <button type="submit">Calculate Estimate</button>
+            </form>
+
+            {% if estimate %}
+            <div class="result">
+                <h2>Estimated Price:</h2>
+                <p>{{ estimate }}</p>
+            </div>
+            {% endif %}
+        </section>
     </main>
 
     <footer>
-        <p>© 2025 Thompson Building Group</p>
+        <p>© 2025 Thompson Custom Building Group</p>
     </footer>
 </body>
 </html>
