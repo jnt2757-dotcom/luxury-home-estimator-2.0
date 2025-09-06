@@ -1,70 +1,61 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, Request, Form
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 
-app = FastAPI(title="Thompson Custom Building Group - Luxury Home Estimator")
+app = FastAPI()
 
-# Allow frontend requests
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Serve static files
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
 
-class EstimateRequest(BaseModel):
-    squareFeet: int
-    bedrooms: int
-    bathrooms: int
-    homeStyle: str
-    neighborhood: str
-    pool: bool
-    poolType: str = ""
-    garage: str
-    basement: bool
-    smartHome: str
-    wineCellar: bool
-    gym: bool
-    elevator: bool
-    landscaping: str
+# Neighborhoods
+neighborhoods = [
+    {"name": "Eastover", "builder": "Thompson Custom Building Group"},
+    {"name": "Foxcroft", "builder": "Thompson Custom Building Group"},
+    {"name": "Myers Park", "builder": "Thompson Custom Building Group"}
+]
 
-@app.post("/estimate")
-def get_estimate(data: EstimateRequest):
-    # Base cost per sq ft
-    base_price = 400  
+@app.get("/", response_class=HTMLResponse)
+async def home(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request, "neighborhoods": neighborhoods})
 
-    # Home style multiplier
-    style_multiplier = {
-        "Modern": 1.05,
-        "Colonial": 1.0,
-        "Craftsman": 1.03
-    }.get(data.homeStyle, 1.0)
+@app.post("/estimate", response_class=HTMLResponse)
+async def estimate(
+    request: Request,
+    sqft: int = Form(...),
+    bedrooms: int = Form(...),
+    bathrooms: int = Form(...),
+    garage: int = Form(...),
+    pool: str = Form(...),
+    kitchen: str = Form(...),
+    flooring: str = Form(...)
+):
+    # Basic luxury cost formula
+    base_cost_per_sqft = 600
+    bedroom_cost = 15000
+    bathroom_cost = 10000
+    garage_cost = 8000 * garage
+    pool_cost = 100000 if pool == "Yes" else 0
+    kitchen_cost = 40000 if kitchen == "Premium" else 0
+    flooring_cost = 25000 if flooring == "Hardwood" else 0
 
-    # Neighborhood multiplier
-    neighborhood_multiplier = {
-        "Eastover": 1.2,
-        "Foxcroft": 1.15,
-        "Myers Park": 1.25
-    }.get(data.neighborhood, 1.0)
+    total_estimate = (
+        sqft * base_cost_per_sqft
+        + bedrooms * bedroom_cost
+        + bathrooms * bathroom_cost
+        + garage_cost
+        + pool_cost
+        + kitchen_cost
+        + flooring_cost
+    )
 
-    # Optional extras
-    extras = 0
-    if data.pool:
-        extras += {"Infinity": 120000, "Lap": 80000, "Standard": 50000}.get(data.poolType, 0)
-    if data.basement:
-        extras += 50000
-    if data.smartHome == "Full":
-        extras += 30000
-    if data.wineCellar:
-        extras += 40000
-    if data.gym:
-        extras += 25000
-    if data.elevator:
-        extras += 60000
-    if data.landscaping == "Full":
-        extras += 35000
+    return templates.TemplateResponse(
+        "index.html",
+        {
+            "request": request,
+            "estimate": f"${total_estimate:,}",
+            "neighborhoods": neighborhoods
+        }
+    )
 
-    # Calculate final estimate
-    estimate = (data.squareFeet * base_price * style_multiplier * neighborhood_multiplier) + extras
-
-    return {"estimate": round(estimate, 2)}
