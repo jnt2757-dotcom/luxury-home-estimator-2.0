@@ -2,123 +2,95 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Charlotte Luxury Home Estimator</title>
-<link rel="stylesheet" href="styles.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luxury Home Estimator - Thompson Custom Building Group</title>
 <style>
-  body { font-family: 'Segoe UI', sans-serif; background-color: #f4f4f9; color: #1b1b2f; }
-  .container { max-width: 1000px; margin: auto; padding: 20px; }
-  h1, h3 { color: #0d1b2a; text-align: center; }
-  .section { background: #fff; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); padding: 20px; margin: 20px 0; }
-  label { display:block; margin: 8px 0 5px; font-weight: 600; }
-  select, input[type=number], input[type=text] { width: 100%; padding: 8px; border-radius: 8px; border:1px solid #ccc; }
-  .features input { margin-right: 10px; }
-  button { background-color: #0d1b2a; color: #fff; padding: 10px 20px; border:none; border-radius:8px; cursor:pointer; font-size:16px; margin-top:10px; }
-  button:hover { background-color: #1b1b2f; }
-  table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-  th, td { padding: 8px; border-bottom: 1px solid #ddd; text-align:left; }
-  th { background-color: #0d1b2a; color: #fff; }
-  #estimate { margin-top: 20px; font-size: 20px; font-weight: bold; color: #b58900; text-align: center; }
+body { font-family: Arial; background:#f9f9f9; color:#222; margin:20px;}
+header {text-align:center; margin-bottom:30px;}
+h1 {color:#0044cc; font-size:2.5em;}
+h2 {color:#222; font-size:1.5em;}
+section {background:#fff; padding:20px; border-radius:12px; box-shadow:0 6px 12px rgba(0,0,0,0.1); margin-bottom:20px;}
+form label {display:block; margin-top:10px;}
+form input, form select {width:100%; padding:8px; margin-top:5px; border-radius:5px; border:1px solid #ccc;}
+button {margin-top:15px; padding:10px 20px; background:#0044cc; color:#fff; border:none; border-radius:5px; cursor:pointer;}
+button:hover {background:#002a99;}
+#estimate {margin-top:20px; font-size:1.5em; color:#0044cc;}
 </style>
 </head>
 <body>
-<div class="container">
-  <h1>Charlotte Luxury Home Estimator</h1>
+<header>
+<h1>Thompson Custom Building Group</h1>
+<h2>Luxury Home Estimator - Charlotte, NC</h2>
+</header>
 
-  <div class="section">
-    <h3>Project Info</h3>
-    <label>Project Name</label>
-    <input type="text" id="projectName" placeholder="Enter project name">
-    <label>Home Size (sq ft)</label>
-    <input type="number" id="squareFeet" value="3000">
-    <label>Number of Stories</label>
-    <input type="number" id="stories" value="2">
-  </div>
+<section>
+<h3>Neighborhoods</h3>
+<ul>
+<li>Eastover - Thompson Custom Building Group</li>
+<li>Foxcroft - Thompson Custom Building Group</li>
+<li>Myers Park - Thompson Custom Building Group</li>
+</ul>
+</section>
 
-  <div class="section">
-    <h3>Neighborhood</h3>
-    <select id="neighborhood">
-      <option value="1.2">Eastover</option>
-      <option value="1.15">Foxcroft</option>
-      <option value="1.15">Myers Park</option>
-      <option value="1.25">Lake Norman</option>
-    </select>
-  </div>
+<section>
+<h3>Estimate Your Home</h3>
+<form id="estimateForm">
+<h4>General</h4>
+<label>Square Footage: <input type="number" name="sqft" required></label>
+<label>Bedrooms: <input type="number" name="bedrooms" required></label>
+<label>Bathrooms: <input type="number" name="bathrooms" required></label>
+<label>Garage Spaces: <input type="number" name="garage" required></label>
 
-  <div class="section">
-    <h3>Architect</h3>
-    <select id="architect">
-      <option value="1.0">Custom/Other</option>
-      <option value="1.15">Garrett Nelson Studio</option>
-      <option value="1.10">Presley Dixon</option>
-    </select>
-  </div>
+<h4>Luxury Features</h4>
+<label>Pool: <select name="pool"><option>Yes</option><option>No</option></select></label>
+<label>Spa: <select name="spa"><option>Yes</option><option>No</option></select></label>
+<label>Elevator: <select name="elevator"><option>Yes</option><option>No</option></select></label>
+<label>Home Theater: <select name="home_theater"><option>Yes</option><option>No</option></select></label>
+<label>Gym: <select name="gym"><option>Yes</option><option>No</option></select></label>
+<label>Wine Cellar: <select name="wine_cellar"><option>Yes</option><option>No</option></select></label>
+<label>Smart Home Tech: <select name="smart_home"><option>Yes</option><option>No</option></select></label>
 
-  <div class="section features">
-    <h3>Luxury Features</h3>
-    <label><input type="checkbox" class="feature" value="50000"> Pool</label>
-    <label><input type="checkbox" class="feature" value="30000"> Slate Roof</label>
-    <label><input type="checkbox" class="feature" value="20000"> Wood Roof</label>
-    <label><input type="checkbox" class="feature" value="40000"> Marble Finishes</label>
-    <label><input type="checkbox" class="feature" value="15000"> Smart Home System</label>
-    <label><input type="checkbox" class="feature" value="25000"> Custom Cabinetry</label>
-  </div>
+<h4>Kitchen & Dining</h4>
+<label>Gourmet Kitchen: <select name="gourmet_kitchen"><option>Yes</option><option>No</option></select></label>
+<label>Island: <select name="island"><option>Yes</option><option>No</option></select></label>
+<label>Premium Appliances: <select name="premium_appliances"><option>Yes</option><option>No</option></select></label>
+<label>Countertops: <select name="countertops"><option>Standard</option><option>Marble</option></select></label>
 
-  <button onclick="calculateEstimate()">Generate Estimate</button>
+<h4>Outdoor Living</h4>
+<label>Patio: <select name="patio"><option>Yes</option><option>No</option></select></label>
+<label>Outdoor Kitchen: <select name="outdoor_kitchen"><option>Yes</option><option>No</option></select></label>
+<label>Landscaping: <select name="landscaping"><option>Yes</option><option>No</option></select></label>
+<label>Fencing: <select name="fencing"><option>Yes</option><option>No</option></select></label>
 
-  <div id="estimate"></div>
+<h4>Interior Finishes</h4>
+<label>Flooring: <select name="flooring"><option>Carpet</option><option>Hardwood</option><option>Marble</option></select></label>
+<label>Lighting: <select name="lighting"><option>Standard</option><option>Premium</option></select></label>
+<label>Cabinetry: <select name="cabinetry"><option>Standard</option><option>Premium</option></select></label>
+<label>Bathroom Finish: <select name="bathroom_finish"><option>Standard</option><option>Luxury</option></select></label>
 
-  <div class="section">
-    <h3>Estimate Breakdown</h3>
-    <table id="breakdown">
-      <thead>
-        <tr>
-          <th>Category</th>
-          <th>Cost</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-</div>
+<h4>Extras</h4>
+<label>Guest House: <select name="guest_house"><option>Yes</option><option>No</option></select></label>
+<label>Office: <select name="office"><option>Yes</option><option>No</option></select></label>
+<label>Security System: <select name="security_system"><option>Yes</option><option>No</option></select></label>
+<label>Solar Panels: <select name="solar_panels"><option>Yes</option><option>No</option></select></label>
+
+<button type="submit">Get Estimate</button>
+</form>
+<div id="estimate"></div>
+</section>
 
 <script>
-function calculateEstimate() {
-  const projectName = document.getElementById('projectName').value;
-  const sqFt = parseFloat(document.getElementById('squareFeet').value);
-  const stories = parseInt(document.getElementById('stories').value);
-  const neighborhoodMultiplier = parseFloat(document.getElementById('neighborhood').value);
-  const architectMultiplier = parseFloat(document.getElementById('architect').value);
-  const basePerSqFt = 650;
-
-  // Base calculation
-  let baseCost = sqFt * basePerSqFt;
-  baseCost *= neighborhoodMultiplier;
-  baseCost *= architectMultiplier;
-
-  // Features
-  let featuresTotal = 0;
-  const features = document.querySelectorAll('.feature');
-  features.forEach(f => {
-    if(f.checked) featuresTotal += parseFloat(f.value);
-  });
-
-  const total = baseCost + featuresTotal;
-
-  // Display total
-  document.getElementById('estimate').innerText = `${projectName ? projectName + ': ' : ''}Estimated Cost: $${total.toLocaleString()}`;
-
-  // Breakdown
-  const tbody = document.querySelector('#breakdown tbody');
-  tbody.innerHTML = `
-    <tr><td>Base Cost (${sqFt} sq ft x $${basePerSqFt}/sqft)</td><td>$${(sqFt*basePerSqFt).toLocaleString()}</td></tr>
-    <tr><td>Neighborhood Multiplier</td><td>${(baseCost/(sqFt*basePerSqFt)).toFixed(2)}x</td></tr>
-    <tr><td>Architect Multiplier</td><td>${architectMultiplier.toFixed(2)}x</td></tr>
-    <tr><td>Luxury Features</td><td>$${featuresTotal.toLocaleString()}</td></tr>
-    <tr><th>Total</th><th>$${total.toLocaleString()}</th></tr>
-  `;
-}
-
-calculateEstimate(); // initial call
+document.getElementById("estimateForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target).entries());
+    const response = await fetch("/estimate", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify(data)
+    });
+    const result = await response.json();
+    document.getElementById("estimate").innerText = "Estimated Cost: " + result.estimate;
+});
 </script>
 </body>
 </html>
