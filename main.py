@@ -5,12 +5,15 @@ import os
 
 app = FastAPI()
 
+# Allow frontend JS to call API
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_methods=["*"],
-    allow_headers=["*"]
+    allow_headers=["*"],
 )
+
+NEIGHBORHOODS = ["Eastover", "Foxcroft", "Myers Park"]
 
 @app.get("/")
 async def home():
@@ -24,65 +27,64 @@ async def estimate(data: dict):
     bathrooms = int(data.get("bathrooms", 0))
     garage = int(data.get("garage", 0))
 
-    # Luxury features
-    pool = data.get("pool") == "Yes"
-    spa = data.get("spa") == "Yes"
-    elevator = data.get("elevator") == "Yes"
-    home_theater = data.get("home_theater") == "Yes"
-    gym = data.get("gym") == "Yes"
-    wine_cellar = data.get("wine_cellar") == "Yes"
-    smart_home = data.get("smart_home") == "Yes"
+    # Luxury Features
+    pool = data.get("pool", "No")
+    spa = data.get("spa", "No")
+    theater = data.get("theater", "No")
+    elevator = data.get("elevator", "No")
+    wine_cellar = data.get("wine_cellar", "No")
+    outdoor_kitchen = data.get("outdoor_kitchen", "No")
 
-    # Kitchen & Dining
-    gourmet_kitchen = data.get("gourmet_kitchen") == "Yes"
-    island = data.get("island") == "Yes"
-    premium_appliances = data.get("premium_appliances") == "Yes"
-    countertops = data.get("countertops") == "Marble"
-
-    # Outdoor Living
-    patio = data.get("patio") == "Yes"
-    outdoor_kitchen = data.get("outdoor_kitchen") == "Yes"
-    landscaping = data.get("landscaping") == "Yes"
-    fencing = data.get("fencing") == "Yes"
-
-    # Interior Finishes
+    # Kitchen & Interiors
+    kitchen = data.get("kitchen", "Standard")
     flooring = data.get("flooring", "Carpet")
-    lighting = data.get("lighting", "Standard")
     cabinetry = data.get("cabinetry", "Standard")
-    bathroom_finish = data.get("bathroom_finish", "Standard")
+    countertops = data.get("countertops", "Granite")
 
-    # Extras
-    guest_house = data.get("guest_house") == "Yes"
-    office = data.get("office") == "Yes"
-    security_system = data.get("security_system") == "Yes"
-    solar_panels = data.get("solar_panels") == "Yes"
+    # Base Costs
+    base_cost_per_sqft = 650
+    bedroom_cost = 15000
+    bathroom_cost = 10000
+    garage_cost = 10000 * garage
 
-    # Base costs
-    total = 0
-    total += sqft * 600
-    total += bedrooms * 15000
-    total += bathrooms * 10000
-    total += garage * 10000
+    # Luxury add-ons costs
+    pool_cost = 100000 if pool=="Yes" else 0
+    spa_cost = 15000 if spa=="Yes" else 0
+    theater_cost = 25000 if theater=="Yes" else 0
+    elevator_cost = 50000 if elevator=="Yes" else 0
+    wine_cellar_cost = 20000 if wine_cellar=="Yes" else 0
+    outdoor_kitchen_cost = 30000 if outdoor_kitchen=="Yes" else 0
 
-    # Add-ons
-    for feature, cost in [
-        (pool, 100000), (spa, 20000), (elevator, 40000),
-        (home_theater, 35000), (gym, 25000), (wine_cellar, 20000),
-        (smart_home, 30000), (gourmet_kitchen, 20000),
-        (island, 5000), (premium_appliances, 15000),
-        (patio, 10000), (outdoor_kitchen, 15000),
-        (landscaping, 10000), (fencing, 5000),
-        (guest_house, 60000), (office, 10000),
-        (security_system, 8000), (solar_panels, 25000)
-    ]:
-        if feature:
-            total += cost
+    kitchen_cost = 20000 if kitchen=="Premium" else 0
+    flooring_cost = 15000 if flooring=="Hardwood" else 0
+    cabinetry_cost = 15000 if cabinetry=="Custom" else 0
+    countertop_cost = 10000 if countertops=="Quartz" else 0
 
-    # Finishes
-    if flooring == "Hardwood": total += 15000
-    if flooring == "Marble": total += 25000
-    if lighting == "Premium": total += 10000
-    if cabinetry == "Premium": total += 15000
-    if bathroom_finish == "Luxury": total += 20000
+    total_estimate = (
+        sqft * base_cost_per_sqft
+        + bedrooms * bedroom_cost
+        + bathrooms * bathroom_cost
+        + garage_cost
+        + pool_cost + spa_cost + theater_cost + elevator_cost + wine_cellar_cost + outdoor_kitchen_cost
+        + kitchen_cost + flooring_cost + cabinetry_cost + countertop_cost
+    )
 
-    return JSONResponse({"estimate": f"${total:,}"})
+    summary = {
+        "sqft": sqft,
+        "bedrooms": bedrooms,
+        "bathrooms": bathrooms,
+        "garage": garage,
+        "pool": pool,
+        "spa": spa,
+        "theater": theater,
+        "elevator": elevator,
+        "wine_cellar": wine_cellar,
+        "outdoor_kitchen": outdoor_kitchen,
+        "kitchen": kitchen,
+        "flooring": flooring,
+        "cabinetry": cabinetry,
+        "countertops": countertops,
+        "total_estimate": f"${total_estimate:,}"
+    }
+
+    return JSONResponse(summary)
