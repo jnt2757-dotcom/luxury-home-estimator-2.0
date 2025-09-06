@@ -56,7 +56,7 @@ async function getEstimate() {
         year: parseInt(document.getElementById("year").value)
     };
 
-    const response = await fetch("http://127.0.0.1:8000/estimate", {
+   const response = await fetch("https://luxury-home-estimator-2-0-1.onrender.com/estimate", { ... })
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(project)
