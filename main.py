@@ -1,19 +1,15 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import uvicorn
 
 app = FastAPI()
-
-# Serve frontend folder
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
 templates = Jinja2Templates(directory="frontend")
 
-# Base home price per square foot
-BASE_PRICE = 650  # mid-range luxury homes $500-800 per sqft
+BASE_PRICE = 650  # per sqft
 
-# Luxury options with price multipliers (as percentage of base price)
 OPTIONS = {
     "Exterior": {
         "Pool": 0.12,
@@ -70,7 +66,7 @@ async def home(request: Request):
 @app.post("/estimate", response_class=HTMLResponse)
 async def estimate(request: Request):
     form = await request.form()
-    sqft = float(form.get("sqft", 2000))
+    sqft = float(form.get("sqft", 2500))
     selected_options = form.getlist("options")
     
     price = BASE_PRICE * sqft
