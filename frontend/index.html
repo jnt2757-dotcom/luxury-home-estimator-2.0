@@ -3,141 +3,94 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Thompson Custom Building Group - Luxury Home Estimator</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<title>Luxury Home Estimator - Thompson Custom Building Group</title>
 <style>
-    body { font-family: 'Playfair Display', serif; background: #f5f5f5; color: #1a1a1a; margin: 0; padding: 0; }
-    header { background: #0a2540; color: gold; text-align: center; padding: 2rem 1rem; font-size: 2rem; }
-    .container { max-width: 900px; margin: 2rem auto; background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-    .section { margin-bottom: 2rem; }
-    label { display: block; margin-top: 1rem; font-weight: bold; }
-    input, select { width: 100%; padding: 0.5rem; margin-top: 0.5rem; border-radius: 6px; border: 1px solid #ccc; }
-    button { background: gold; color: #0a2540; border: none; padding: 0.8rem 2rem; font-size: 1rem; border-radius: 8px; cursor: pointer; transition: 0.3s; margin-top: 1rem; }
-    button:hover { background: #e6c200; }
-    #estimateResult { font-size: 1.5rem; margin-top: 1rem; text-align: center; color: #0a2540; font-weight: bold; }
-    .optional { font-weight: normal; font-size: 0.9rem; color: #555; }
+body { font-family: Arial; background:#f9f9f9; color:#222; margin:20px;}
+header {text-align:center; margin-bottom:30px;}
+h1 {color:#0044cc; font-size:2.5em;}
+h2 {color:#222; font-size:1.5em;}
+section {background:#fff; padding:20px; border-radius:12px; box-shadow:0 6px 12px rgba(0,0,0,0.1); margin-bottom:20px;}
+form label {display:block; margin-top:10px;}
+form input, form select {width:100%; padding:8px; margin-top:5px; border-radius:5px; border:1px solid #ccc;}
+button {margin-top:15px; padding:10px 20px; background:#0044cc; color:#fff; border:none; border-radius:5px; cursor:pointer;}
+button:hover {background:#002a99;}
+#estimate {margin-top:20px; font-size:1.5em; color:#0044cc;}
 </style>
 </head>
 <body>
+<header>
+<h1>Thompson Custom Building Group</h1>
+<h2>Luxury Home Estimator - Charlotte, NC</h2>
+</header>
 
-<header>Thompson Custom Building Group - Charlotte Luxury Home Estimator</header>
+<section>
+<h3>Neighborhoods</h3>
+<ul>
+<li>Eastover - Thompson Custom Building Group</li>
+<li>Foxcroft - Thompson Custom Building Group</li>
+<li>Myers Park - Thompson Custom Building Group</li>
+</ul>
+</section>
 
-<div class="container">
+<section>
+<h3>Estimate Your Home</h3>
+<form id="estimateForm">
+<h4>General</h4>
+<label>Square Footage: <input type="number" name="sqft" required></label>
+<label>Bedrooms: <input type="number" name="bedrooms" required></label>
+<label>Bathrooms: <input type="number" name="bathrooms" required></label>
+<label>Garage Spaces: <input type="number" name="garage" required></label>
 
-    <div class="section">
-        <label>Square Feet</label>
-        <input type="number" id="squareFeet" placeholder="Enter square feet">
+<h4>Luxury Features</h4>
+<label>Pool: <select name="pool"><option>Yes</option><option>No</option></select></label>
+<label>Spa: <select name="spa"><option>Yes</option><option>No</option></select></label>
+<label>Elevator: <select name="elevator"><option>Yes</option><option>No</option></select></label>
+<label>Home Theater: <select name="home_theater"><option>Yes</option><option>No</option></select></label>
+<label>Gym: <select name="gym"><option>Yes</option><option>No</option></select></label>
+<label>Wine Cellar: <select name="wine_cellar"><option>Yes</option><option>No</option></select></label>
+<label>Smart Home Tech: <select name="smart_home"><option>Yes</option><option>No</option></select></label>
 
-        <label>Bedrooms</label>
-        <input type="number" id="bedrooms" min="1" max="10">
+<h4>Kitchen & Dining</h4>
+<label>Gourmet Kitchen: <select name="gourmet_kitchen"><option>Yes</option><option>No</option></select></label>
+<label>Island: <select name="island"><option>Yes</option><option>No</option></select></label>
+<label>Premium Appliances: <select name="premium_appliances"><option>Yes</option><option>No</option></select></label>
+<label>Countertops: <select name="countertops"><option>Standard</option><option>Marble</option></select></label>
 
-        <label>Bathrooms</label>
-        <input type="number" id="bathrooms" min="1" max="10">
-    </div>
+<h4>Outdoor Living</h4>
+<label>Patio: <select name="patio"><option>Yes</option><option>No</option></select></label>
+<label>Outdoor Kitchen: <select name="outdoor_kitchen"><option>Yes</option><option>No</option></select></label>
+<label>Landscaping: <select name="landscaping"><option>Yes</option><option>No</option></select></label>
+<label>Fencing: <select name="fencing"><option>Yes</option><option>No</option></select></label>
 
-    <div class="section">
-        <label>Home Style</label>
-        <select id="homeStyle">
-            <option>Modern</option>
-            <option>Colonial</option>
-            <option>Craftsman</option>
-        </select>
+<h4>Interior Finishes</h4>
+<label>Flooring: <select name="flooring"><option>Carpet</option><option>Hardwood</option><option>Marble</option></select></label>
+<label>Lighting: <select name="lighting"><option>Standard</option><option>Premium</option></select></label>
+<label>Cabinetry: <select name="cabinetry"><option>Standard</option><option>Premium</option></select></label>
+<label>Bathroom Finish: <select name="bathroom_finish"><option>Standard</option><option>Luxury</option></select></label>
 
-        <label>Neighborhood</label>
-        <select id="neighborhood">
-            <option>Eastover</option>
-            <option>Foxcroft</option>
-            <option>Myers Park</option>
-        </select>
-    </div>
+<h4>Extras</h4>
+<label>Guest House: <select name="guest_house"><option>Yes</option><option>No</option></select></label>
+<label>Office: <select name="office"><option>Yes</option><option>No</option></select></label>
+<label>Security System: <select name="security_system"><option>Yes</option><option>No</option></select></label>
+<label>Solar Panels: <select name="solar_panels"><option>Yes</option><option>No</option></select></label>
 
-    <div class="section">
-        <label>Garage</label>
-        <select id="garage">
-            <option>Attached</option>
-            <option>Detached</option>
-            <option>Carport</option>
-        </select>
-
-        <label>Basement</label>
-        <input type="checkbox" id="basement"> Optional
-
-        <label>Smart Home</label>
-        <select id="smartHome">
-            <option>None</option>
-            <option>Partial</option>
-            <option>Full</option>
-        </select>
-    </div>
-
-    <div class="section">
-        <label>Pool</label>
-        <input type="checkbox" id="pool" onchange="togglePoolType()"> Yes
-
-        <div id="poolTypeDiv" style="display:none;">
-            <label>Pool Type</label>
-            <select id="poolType">
-                <option>Standard</option>
-                <option>Lap</option>
-                <option>Infinity</option>
-            </select>
-        </div>
-
-        <label>Wine Cellar</label>
-        <input type="checkbox" id="wineCellar"> Optional
-
-        <label>Gym</label>
-        <input type="checkbox" id="gym"> Optional
-
-        <label>Elevator</label>
-        <input type="checkbox" id="elevator"> Optional
-
-        <label>Landscaping</label>
-        <select id="landscaping">
-            <option>Minimal</option>
-            <option>Full</option>
-        </select>
-    </div>
-
-    <button id="getEstimateBtn">Get Estimate</button>
-
-    <p id="estimateResult"></p>
-</div>
+<button type="submit">Get Estimate</button>
+</form>
+<div id="estimate"></div>
+</section>
 
 <script>
-function togglePoolType(){
-    const poolDiv = document.getElementById("poolTypeDiv");
-    poolDiv.style.display = document.getElementById("pool").checked ? "block" : "none";
-}
-
-document.getElementById("getEstimateBtn").addEventListener("click", async () => {
-    const payload = {
-        squareFeet: parseInt(document.getElementById("squareFeet").value),
-        bedrooms: parseInt(document.getElementById("bedrooms").value),
-        bathrooms: parseInt(document.getElementById("bathrooms").value),
-        homeStyle: document.getElementById("homeStyle").value,
-        neighborhood: document.getElementById("neighborhood").value,
-        pool: document.getElementById("pool").checked,
-        poolType: document.getElementById("poolType").value,
-        garage: document.getElementById("garage").value,
-        basement: document.getElementById("basement").checked,
-        smartHome: document.getElementById("smartHome").value,
-        wineCellar: document.getElementById("wineCellar").checked,
-        gym: document.getElementById("gym").checked,
-        elevator: document.getElementById("elevator").checked,
-        landscaping: document.getElementById("landscaping").value
-    };
-
+document.getElementById("estimateForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target).entries());
     const response = await fetch("/estimate", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(payload)
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify(data)
     });
-
-    const data = await response.json();
-    document.getElementById("estimateResult").innerText = `Estimated Cost: $${data.estimate.toLocaleString()}`;
+    const result = await response.json();
+    document.getElementById("estimate").innerText = "Estimated Cost: " + result.estimate;
 });
 </script>
-
 </body>
 </html>
