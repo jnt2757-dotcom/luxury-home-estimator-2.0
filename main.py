@@ -1,51 +1,18 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+import os
 
-app = FastAPI(title="Luxury Home Cost Estimator")
+app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Ensure frontend folder exists
+if not os.path.isdir("frontend"):
+    raise Exception("frontend folder not found in project root")
 
-class Project(BaseModel):
-    gross_area: float
-    floors: int
-    finish_level: int
-    foundation: str
-    has_pool: int
-    has_elevator: int
-    site_difficulty: int
-    location_index: float
-    year: int
+# Serve static files at /static
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
-def dummy_estimate(project: Project):
-    base = project.gross_area * 2500 * project.finish_level
-    difficulty_factor = 1 + 0.05 * project.site_difficulty
-    pool_factor = 1.2 if project.has_pool else 1.0
-    elevator_factor = 1.15 if project.has_elevator else 1.0
-    foundation_factor = 1.1 if project.foundation.lower() == "basement" else 1.0
-    location_factor = project.location_index
-
-    p50 = base * difficulty_factor * pool_factor * elevator_factor * foundation_factor * location_factor
-    p10 = p50 * 0.9
-    p90 = p50 * 1.1
-
-    breakdown = {
-        "Substructure/Foundation": p50 * 0.12,
-        "Superstructure": p50 * 0.25,
-        "Roofing": p50 * 0.08,
-        "Finishes": p50 * 0.30,
-        "MEP": p50 * 0.15,
-        "Exterior/Landscape": p50 * 0.10
-    }
-
-    return {"p10": round(p10,0), "p50": round(p50,0), "p90": round(p90,0), "breakdown": breakdown}
-
-@app.post("/estimate")
-def estimate(project: Project):
-    return dummy_estimate(project)
+# Serve index.html at root URL
+@app.get("/")
+async def root():
+    return FileResponse("frontend/index.html")
