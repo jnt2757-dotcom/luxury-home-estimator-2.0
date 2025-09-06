@@ -1,71 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thompson CBG Luxury Home Estimator</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Thompson CBG Luxury Home Estimator</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body {
+            font-family: 'Helvetica Neue', sans-serif;
+            background-color: #f8f8f8;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #0b1d3a;
+            color: #fff;
+            text-align: center;
+            padding: 2rem 0;
+        }
+        header img {
+            max-height: 80px;
+        }
+        main {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #fff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: 12px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        form {
+            display: grid;
+            gap: 1rem;
+        }
+        label {
+            font-weight: bold;
+        }
+        select, input[type="number"], input[type="text"] {
+            padding: 0.5rem;
+            font-size: 1rem;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        .features input {
+            margin-right: 0.5rem;
+        }
+        button {
+            background-color: #0b1d3a;
+            color: #fff;
+            border: none;
+            padding: 1rem;
+            font-size: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #162a5c;
+        }
+        .result {
+            margin-top: 1.5rem;
+            font-size: 1.2rem;
+            text-align: center;
+            color: #0b1d3a;
+            font-weight: bold;
+        }
+        footer {
+            text-align: center;
+            margin: 2rem 0;
+            color: #666;
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <img src="https://www.thompsonbuildinggroup.com/wp-content/uploads/2023/01/CBG-Logo.png" alt="Thompson CBG Logo" class="logo">
+<header>
+    <img src="/static/logo.png" alt="Thompson CBG Logo">
     <h1>Luxury Home Estimator</h1>
-  </header>
+</header>
+<main>
+    <form method="post" action="/estimate">
+        <label for="neighborhood">Neighborhood</label>
+        <select name="neighborhood" id="neighborhood">
+            {% for n in neighborhoods %}
+                <option value="{{ n }}" {% if neighborhood == n %}selected{% endif %}>{{ n }}</option>
+            {% endfor %}
+        </select>
 
-  <section class="hero">
-    <div class="hero-text">
-      <h2>Plan Your Dream Home</h2>
-      <p>Estimate costs for luxury homes in Eastover, Foxcroft, Myers Park, and more.</p>
-    </div>
-    <img src="https://thompsoncustomhomes.com/images/11330GreenbayDr.0539.jpg" alt="Luxury Home Exterior" class="hero-image">
-  </section>
+        <label for="architect">Architect</label>
+        <select name="architect" id="architect">
+            {% for a in architects %}
+                <option value="{{ a }}" {% if architect == a %}selected{% endif %}>{{ a }}</option>
+            {% endfor %}
+        </select>
 
-  <section class="estimator">
-    <h2>Get Your Estimate</h2>
-    <form id="estimateForm">
-      <label for="sqft">Square Footage:</label>
-      <input type="number" id="sqft" required>
+        <label for="square_feet">Square Feet</label>
+        <input type="number" name="square_feet" id="square_feet" value="{{ square_feet or '' }}" required>
 
-      <label for="neighborhood">Neighborhood:</label>
-      <select id="neighborhood">
-        <option value="eastover">Eastover</option>
-        <option value="foxcroft">Foxcroft</option>
-        <option value="myers_park">Myers Park</option>
-      </select>
+        <div class="features">
+            <label>Features</label>
+            {% for f in all_features %}
+                <div>
+                    <input type="checkbox" name="selected_features" value="{{ f }}" {% if f in features %}checked{% endif %}>
+                    {{ f }}
+                </div>
+            {% endfor %}
+        </div>
 
-      <label for="architect">Architect:</label>
-      <select id="architect">
-        <option value="garret_nelson">Garret Nelson Studio</option>
-        <option value="presley_dixon">Presley Dixon</option>
-      </select>
-
-      <label for="features">Luxury Features:</label>
-      <select id="features" multiple>
-        <option value="pool">Pool</option>
-        <option value="marble">Marble Finishes</option>
-        <option value="slate_roof">Slate Roof</option>
-        <option value="wood_roof">Wood Roof</option>
-      </select>
-
-      <button type="submit">Estimate Cost</button>
+        <button type="submit">Get Estimate</button>
     </form>
 
-    <div id="result"></div>
-  </section>
-
-  <section class="gallery">
-    <h2>Portfolio Highlights</h2>
-    <div class="images">
-      <img src="https://thompsoncustomhomes.com/images/0145_190524_Chandos.jpg" alt="Interior Design">
-      <img src="https://thompsoncustomhomes.com/images/5569_220616_Thompson.jpg" alt="Pool Area">
-    </div>
-  </section>
-
-  <footer>
-    <p>&copy; 2025 Thompson Custom Building Group</p>
-  </footer>
-
-  <script src="script.js"></script>
+    {% if estimated_price %}
+        <div class="result">
+            Estimated Home Price: {{ estimated_price }}
+        </div>
+    {% endif %}
+</main>
+<footer>
+    Thompson Custom Building Group &copy; 2025
+</footer>
 </body>
 </html>
