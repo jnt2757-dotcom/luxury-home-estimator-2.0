@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luxury Home Estimator</title>
+<style>
+body { font-family: Arial; max-width: 600px; margin: auto; padding: 10px; }
+input, select { width: 100%; margin: 5px 0; padding: 8px; }
+button { width: 100%; padding: 10px; margin-top: 10px; background: #007BFF; color: white; border: none; cursor: pointer; }
+button:hover { background: #0056b3; }
+.result { margin-top: 20px; }
+</style>
+</head>
+<body>
+
+<h2>Luxury Home Cost Estimator</h2>
+
+<label>Gross Area (m²)</label><input id="gross_area" type="number" value="500">
+<label>Floors</label><input id="floors" type="number" value="2">
+<label>Finish Level (1-5)</label><input id="finish_level" type="number" min="1" max="5" value="3">
+<label>Foundation</label>
+<select id="foundation">
+  <option value="basement">Basement</option>
+  <option value="slab">Slab</option>
+</select>
+<label>Pool</label>
+<select id="has_pool">
+  <option value="0">No</option>
+  <option value="1">Yes</option>
+</select>
+<label>Elevator</label>
+<select id="has_elevator">
+  <option value="0">No</option>
+  <option value="1">Yes</option>
+</select>
+<label>Site Difficulty (1-3)</label><input id="site_difficulty" type="number" min="1" max="3" value="1">
+<label>Location Index</label><input id="location_index" type="number" step="0.01" value="1.0">
+<label>Year</label><input id="year" type="number" value="2025">
+
+<button onclick="getEstimate()">Get Estimate</button>
+
+<div class="result" id="result"></div>
+
+<script>
+async function getEstimate() {
+    const project = {
+        gross_area: parseFloat(document.getElementById("gross_area").value),
+        floors: parseInt(document.getElementById("floors").value),
+        finish_level: parseInt(document.getElementById("finish_level").value),
+        foundation: document.getElementById("foundation").value,
+        has_pool: parseInt(document.getElementById("has_pool").value),
+        has_elevator: parseInt(document.getElementById("has_elevator").value),
+        site_difficulty: parseInt(document.getElementById("site_difficulty").value),
+        location_index: parseFloat(document.getElementById("location_index").value),
+        year: parseInt(document.getElementById("year").value)
+    };
+
+    const response = await fetch("http://127.0.0.1:8000/estimate", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(project)
+    });
+    const data = await response.json();
+
+    let html = `<h3>Estimate</h3>
+                <p>P10: CHF ${data.p10}</p>
+                <p>P50: CHF ${data.p50}</p>
+                <p>P90: CHF ${data.p90}</p>
+                <h4>Breakdown (P50)</h4><ul>`;
+    for (const [key, value] of Object.entries(data.breakdown)) {
+        html += `<li>${key}: CHF ${Math.round(value)}</li>`;
+    }
+    html += "</ul>";
+    document.getElementById("result").innerHTML = html;
+}
+</script>
+
+</body>
+</html>
